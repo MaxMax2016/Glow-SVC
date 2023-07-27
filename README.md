@@ -18,7 +18,7 @@ As this name show, this is a personal project.
 
 5. Download pretrain model, and put it into `vits_pretrain/`.
     ```shell
-    python svc_inference.py --config configs/base.yaml --model ./vits_pretrain/m_svc.pretrain.pth --spk ./configs/singers/singer0001.npy --wave test.wav
+    python svc_inference.py --config configs/base.yaml --model ./vits_pretrain/svc.pretrain.pth --spk ./configs/singers/singer0001.npy --wave test.wav
     ```
 
 ## Dataset preparation
@@ -128,27 +128,30 @@ data_svc/
 ## Train
 1. Start training
    ```
-   python svc_trainer.py -c configs/base.yaml -n m_svc
+   python svc_trainer.py -c configs/base.yaml -n svc
    ``` 
 2. Resume training
    ```
-   python svc_trainer.py -c configs/base.yaml -n m_svc -p chkpt/m_svc/***.pth
+   python svc_trainer.py -c configs/base.yaml -n svc -p chkpt/svc/***.pth
    ```
 3. Log visualization
    ```
    tensorboard --logdir logs/
    ```
 
+## Loss
+mel_loss should be less than 0.45
+
 ## Inference
 
 1. Export inference model: text encoder, Flow network, Decoder network
    ```
-   python svc_export.py --config configs/base.yaml --checkpoint_path chkpt/m_svc/***.pt
+   python svc_export.py --config configs/base.yaml --checkpoint_path chkpt/svc/***.pt
    ```
 2. Inference
    - if there is no need to adjust `f0`, just run the following command.
    ```
-   python svc_inference.py --config configs/base.yaml --model m_svc.pth --spk ./data_svc/singer/your_singer.spk.npy --wave test.wav --shift 0
+   python svc_inference.py --config configs/base.yaml --model svc.pth --spk ./data_svc/singer/your_singer.spk.npy --wave test.wav --shift 0
    ```
    - if `f0` will be adjusted manually, follow the steps:
 
@@ -162,7 +165,7 @@ data_svc/
        ```
      3. final inference
        ```
-       python svc_inference.py --config configs/base.yaml --model sovits5.0.pth --spk ./data_svc/singer/your_singer.spk.npy --wave test.wav --ppg test.ppg.npy --vec test.vec.npy --pit test.csv --shift 0
+       python svc_inference.py --config configs/base.yaml --model svc.pth --spk ./data_svc/singer/your_singer.spk.npy --wave test.wav --vec test.vec.npy --pit test.csv --shift 0
        ```
 
 ## Code sources and references
