@@ -1,0 +1,45 @@
+train:
+  model: "vits.models.SynthesizerTrn"
+  seed: 1234
+  epochs: 10000
+  learning_rate: 1e-4
+  betas: [0.8, 0.99]
+  lr_decay: 0.999875
+  eps: 1e-9
+  batch_size: 24
+  port: 8001
+  pretrain: ""
+#############################
+data: 
+  training_files: "files/train.txt"
+  validation_files: "files/valid.txt"
+  segment_size: 16000  # WARNING: base on hop_length
+  max_wav_value: 32768.0
+  sampling_rate: 32000
+  filter_length: 1024
+  hop_length: 320
+  win_length: 1024
+  mel_channels: 100
+  mel_fmin: 40.0
+  mel_fmax: 16000.0
+#############################
+vits:
+  vec_dim: 256
+  spk_dim: 256
+  gin_channels: 256
+  inter_channels: 256
+  hidden_channels: 256
+  filter_channels: 640
+#############################
+log:
+  info_interval: 100
+  eval_interval: 1
+  save_interval: 1
+  num_audio: 6
+  pth_dir: 'chkpt'
+  log_dir: 'logs'
+#############################
+dist_config:
+  dist_backend: "nccl"
+  dist_url: "tcp://localhost:54321"
+  world_size: 1
