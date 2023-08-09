@@ -1,6 +1,6 @@
 <div align="center">
 <h1> Max's Singing Voice Conversion, Just for Playing! </h1>
-As this name show, this is a personal project.
+As this name show, this is a personal project. [WIP]
 </div>
 
 ## Setup Environment
@@ -14,9 +14,7 @@ As this name show, this is a personal project.
 
 3. Download [hubert_soft model](https://github.com/bshall/hubert/releases/tag/v0.1)，put `hubert-soft-0d54a1f4.pt` into `hubert_pretrain/`.
 
-4. Download pitch extractor [crepe full](https://github.com/maxrmorrison/torchcrepe/tree/master/torchcrepe/assets)，put `full.pth` into `crepe/assets`.
-
-5. Download pretrain model, and put it into `vits_pretrain/`.
+4. Download pretrain model, and put it into `vits_pretrain/`.
     ```shell
     python svc_inference.py --config configs/base.yaml --model ./vits_pretrain/svc.pretrain.pth --spk ./configs/singers/singer0001.npy --wave test.wav
     ```
@@ -98,7 +96,7 @@ data_svc/
     ```
 2. Use 16K audio to extract pitch
     ```
-    python prepare/preprocess_crepe.py -w data_svc/waves-16k/ -p data_svc/pitch
+    python prepare/preprocess_f0.py -w data_svc/waves-16k/ -p data_svc/pitch
     ```
 3. use 32k audio to extract mel
     ```
@@ -144,29 +142,41 @@ mel_loss should be less than 0.45
 
 ## Inference
 
-1. Export inference model: text encoder, Flow network, Decoder network
+1. Export inference model
    ```
    python svc_export.py --config configs/base.yaml --checkpoint_path chkpt/svc/***.pt
    ```
-2. Inference
-   - if there is no need to adjust `f0`, just run the following command.
-   ```
-   python svc_inference.py --config configs/base.yaml --model svc.pth --spk ./data_svc/singer/your_singer.spk.npy --wave test.wav --shift 0
-   ```
-   - if `f0` will be adjusted manually, follow the steps:
 
-     1. use hubert to extract content vector
-       ```
-       python hubert/inference.py -w test.wav -v test.vec.npy
-       ```
-     2. extract the F0 parameter to the csv text format
-       ```
-       python pitch/inference.py -w test.wav -p test.csv
-       ```
-     3. final inference
-       ```
-       python svc_inference.py --config configs/base.yaml --model svc.pth --spk ./data_svc/singer/your_singer.spk.npy --wave test.wav --vec test.vec.npy --pit test.csv --shift 0
-       ```
+2. Inference
+    - if there is no need to adjust `f0`, just run the following command.
+        ```
+        python svc_inference.py --config configs/base.yaml --model svc.pth --spk ./data_svc/singer/your_singer.spk.npy --wave test.wav --shift 0
+        ```
+    - if `f0` will be adjusted manually, follow the steps:
+
+        1. use hubert to extract content vector
+            ```
+            python hubert/inference.py -w test.wav -v test.vec.npy
+            ```
+        2. extract the F0 parameter to the csv text format
+            ```
+            python pitch/inference.py -w test.wav -p test.csv
+            ```
+        3. final inference
+            ```
+            python svc_inference.py --config configs/base.yaml --model svc.pth --spk ./data_svc/singer/your_singer.spk.npy --wave test.wav --vec test.vec.npy --pit test.csv --shift 0
+            ```
+
+3. Convert mel to wave
+    ```
+    python svc_inference_wave.py --mel svc_out.mel.pt --pit svc_tmp.pit.csv
+    ```
+
+4. Debug mel for wave
+   
+    ```
+    python spec/inference.py -w test.wav -m test.mel.pt
+    ```
 
 ## Code sources and references
 
