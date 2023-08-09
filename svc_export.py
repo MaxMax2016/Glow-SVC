@@ -33,7 +33,6 @@ def save_pretrain(checkpoint_path, save_path):
     checkpoint_dict = torch.load(checkpoint_path, map_location="cpu")
     torch.save({
         'model_g': checkpoint_dict['model_g'],
-        'model_d': checkpoint_dict['model_d'],
     }, save_path)
 
 
